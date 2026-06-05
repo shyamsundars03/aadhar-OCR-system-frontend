@@ -1,6 +1,35 @@
 import { useState, useEffect, useMemo } from 'react';
 import { uploadAadhaarImages } from '../api/ocrApi';
 
+const resizeImage = (file, maxWidth = 1000) => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        if (img.width <= maxWidth) {
+          resolve(file);
+          return;
+        }
+        const canvas = document.createElement('canvas');
+        const scale = maxWidth / img.width;
+        canvas.width = maxWidth;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => {
+          resolve(new File([blob], file.name, {
+            type: file.type,
+            lastModified: Date.now()
+          }));
+        }, file.type, 0.85);
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
 export const useAadhaarOcr = () => {
   const [frontFile, setFrontFile] = useState(null);
   const [backFile, setBackFile] = useState(null);
@@ -52,7 +81,9 @@ export const useAadhaarOcr = () => {
     setError(null);
     setResult(null);
     try {
-      const response = await uploadAadhaarImages({ frontFile, backFile });
+      const resizedFront = await resizeImage(frontFile);
+      const resizedBack = await resizeImage(backFile);
+      const response = await uploadAadhaarImages({ frontFile: resizedFront, backFile: resizedBack });
       if (response.status === 'success') {
         setResult(response.data);
         setProcessStatus('success');
