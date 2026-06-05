@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { ImagePreview } from './ImagePreview';
 
 export const AadhaarUploadForm = ({ 
@@ -36,6 +36,8 @@ export const AadhaarUploadForm = ({
     }
   };
 
+  const isDisabled = status === 'processing' || status === 'success' || status === 'error';
+
   return (
     <form className="upload-form" onSubmit={handleSubmit}>
       <div className="upload-grid">
@@ -45,6 +47,7 @@ export const AadhaarUploadForm = ({
           inputId="aadhaar-front-input"
           onFileSelect={handleFrontSelect}
           onClear={handleFrontClear}
+          isDisabled={isDisabled}
         />
         
         <ImagePreview 
@@ -53,6 +56,7 @@ export const AadhaarUploadForm = ({
           inputId="aadhaar-back-input"
           onFileSelect={handleBackSelect}
           onClear={handleBackClear}
+          isDisabled={isDisabled}
         />
       </div>
 

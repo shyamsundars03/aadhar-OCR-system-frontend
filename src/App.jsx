@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import  { useEffect } from 'react';
 import { PageLayout } from './components/Layout/PageLayout';
 import { AadhaarUploadForm } from './components/Upload/AadhaarUploadForm';
 import { AadhaarResultCard } from './components/Result/AadhaarResultCard';
 import { RawJsonViewer } from './components/Result/RawJsonViewer';
 import { Loader } from './components/Feedback/Loader';
 import { useAadhaarOcr } from './hooks/useAadhaarOcr';
-import { useToast } from './context/ToastContext';
+import { useToast } from './hooks/useToast';
 
 function App() {
   const {
@@ -25,11 +25,27 @@ function App() {
 
   useEffect(() => {
     if (status === 'success') {
-      addToast('Aadhaar card details extracted successfully!', 'success');
+      const missingFields = [];
+      if (!result.name) missingFields.push('Name');
+      if (!result.dob) missingFields.push('DOB');
+      if (!result.gender) missingFields.push('Gender');
+      if (!result.aadhaarNumber) missingFields.push('Aadhaar Number');
+      if (!result.address) missingFields.push('Address');
+
+      if (missingFields.length > 0) {
+        addToast(`Aadhaar processed, but some fields were not recognized: ${missingFields.join(', ')}`, 'error', 3000);
+      } else {
+        addToast('Aadhaar card details extracted successfully!', 'success', 3000);
+      }
+
+      // Log raw text for debugging in the browser console
+      if (result.rawText) {
+        console.log("========== FRONTEND RAW OCR TEXT ==========\n", result.rawText, "\n===========================================");
+      }
     } else if (status === 'error') {
-      addToast(error || 'Failed to process Aadhaar card images.', 'error');
+      addToast(error || 'Failed to process Aadhaar card images.', 'error', 3000);
     }
-  }, [status, error, addToast]);
+  }, [status, result, error, addToast]);
 
   return (
     <PageLayout>
@@ -49,11 +65,11 @@ function App() {
         <>
           <AadhaarResultCard result={result} />
           <RawJsonViewer result={result} />
-          
+
           <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <button 
-              type="button" 
-              className="btn btn-secondary" 
+            <button
+              type="button"
+              className="btn btn-secondary"
               onClick={resetFlow}
             >
               Scan Another Card
@@ -64,9 +80,9 @@ function App() {
 
       {status === 'error' && (
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <button 
-            type="button" 
-            className="btn btn-secondary" 
+          <button
+            type="button"
+            className="btn btn-secondary"
             onClick={resetFlow}
           >
             Try Again

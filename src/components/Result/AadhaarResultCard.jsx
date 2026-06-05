@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 
 export const AadhaarResultCard = ({ result }) => {
   if (!result) return null;
@@ -15,8 +15,7 @@ export const AadhaarResultCard = ({ result }) => {
       <div className="aadhaar-digital-card">
         <div className="card-top-header">
           <div className="gov-seal-placeholder">
-            <span className="seal-text">भारत सरकार</span>
-            <span className="seal-subtext">Government of India</span>
+            <span className="seal-text">Government of India</span>
           </div>
           <div className="card-title-eng">Unique Identification Authority of India</div>
         </div>
@@ -24,30 +23,30 @@ export const AadhaarResultCard = ({ result }) => {
         <div className="card-body-layout">
           <div className="photo-placeholder-avatar">
             <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
             </svg>
           </div>
 
           <div className="card-details-grid">
             <div className="detail-item">
-              <span className="detail-label">Name / नाम:</span>
+              <span className="detail-label">Name:</span>
               <span className="detail-value">{name || 'Not Detected'}</span>
             </div>
-            
+
             <div className="detail-sub-group">
               <div className="detail-item">
-                <span className="detail-label">DOB / जन्म तिथि:</span>
+                <span className="detail-label">DOB:</span>
                 <span className="detail-value">{dob || 'Not Detected'}</span>
               </div>
               <div className="detail-item">
-                <span className="detail-label">Gender / लिंग:</span>
+                <span className="detail-label">Gender:</span>
                 <span className="detail-value">{gender || 'Not Detected'}</span>
               </div>
             </div>
 
             <div className="detail-item full-width">
-              <span className="detail-label">Address / पता:</span>
+              <span className="detail-label">Address:</span>
               <span className="detail-value address-value">{address || 'Not Detected'}</span>
             </div>
           </div>
@@ -57,7 +56,6 @@ export const AadhaarResultCard = ({ result }) => {
           <div className="aadhaar-number-display">
             {aadhaarNumber ? aadhaarNumber.replace(/(\d{4})/g, '$1 ').trim() : 'XXXX XXXX XXXX'}
           </div>
-          <div className="aadhaar-logo-sub">मेरा आधार, मेरी पहचान</div>
         </div>
       </div>
     </div>
