@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { PageLayout } from './components/Layout/PageLayout';
 import { AadhaarUploadForm } from './components/Upload/AadhaarUploadForm';
 import { AadhaarResultCard } from './components/Result/AadhaarResultCard';
 import { RawJsonViewer } from './components/Result/RawJsonViewer';
 import { Loader } from './components/Feedback/Loader';
-import { ErrorAlert } from './components/Feedback/ErrorAlert';
 import { useAadhaarOcr } from './hooks/useAadhaarOcr';
+import { useToast } from './context/ToastContext';
 
 function App() {
   const {
@@ -21,6 +21,16 @@ function App() {
     resetFlow
   } = useAadhaarOcr();
 
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    if (status === 'success') {
+      addToast('Aadhaar card details extracted successfully!', 'success');
+    } else if (status === 'error') {
+      addToast(error || 'Failed to process Aadhaar card images.', 'error');
+    }
+  }, [status, error, addToast]);
+
   return (
     <PageLayout>
       <AadhaarUploadForm
@@ -34,8 +44,6 @@ function App() {
       />
 
       {status === 'processing' && <Loader />}
-
-      {status === 'error' && <ErrorAlert message={error} />}
 
       {status === 'success' && (
         <>
@@ -52,6 +60,18 @@ function App() {
             </button>
           </div>
         </>
+      )}
+
+      {status === 'error' && (
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <button 
+            type="button" 
+            className="btn btn-secondary" 
+            onClick={resetFlow}
+          >
+            Try Again
+          </button>
+        </div>
       )}
     </PageLayout>
   );
