@@ -33,17 +33,16 @@ function App() {
       if (!result.address) missingFields.push('Address');
 
       if (missingFields.length > 0) {
-        addToast(`Aadhaar processed, but some fields were not recognized: ${missingFields.join(', ')}`, 'error', 3000);
+        addToast(`Aadhaar processed, but some fields were not recognized: ${missingFields.join(', ')}`, 'error', 2000);
       } else {
-        addToast('Aadhaar card details extracted successfully!', 'success', 3000);
+        addToast('Aadhaar card details extracted successfully!', 'success', 2000);
       }
 
-      // Log raw text for debugging in the browser console
       if (result.rawText) {
         console.log("========== FRONTEND RAW OCR TEXT ==========\n", result.rawText, "\n===========================================");
       }
     } else if (status === 'error') {
-      addToast(error || 'Failed to process Aadhaar card images.', 'error', 3000);
+      addToast(error || 'Failed to process Aadhaar card images.', 'error', 2000);
     }
   }, [status, result, error, addToast]);
 
