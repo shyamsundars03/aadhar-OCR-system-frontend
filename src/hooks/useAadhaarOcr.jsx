@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { uploadAadhaarImages } from '../api/ocrApi';
 
-const resizeImage = (file, maxWidth = 1000) => {
+const resizeImage = (file, maxWidth = 800) => {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -83,6 +83,10 @@ export const useAadhaarOcr = () => {
     try {
       const resizedFront = await resizeImage(frontFile);
       const resizedBack = await resizeImage(backFile);
+
+console.log("front",resizedFront)
+console.log("backside",resizedBack)
+
       const response = await uploadAadhaarImages({ frontFile: resizedFront, backFile: resizedBack });
       if (response.status === 'success') {
         setResult(response.data);
@@ -95,6 +99,8 @@ export const useAadhaarOcr = () => {
       setProcessStatus('error');
     }
   };
+
+console.log(runOcr)
 
   const resetFlow = () => {
     if (frontPreview) {
