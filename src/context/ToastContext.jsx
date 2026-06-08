@@ -4,7 +4,7 @@ import { ToastContext } from './toastContext';
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
 
-  const addToast = useCallback((message, type = 'success', duration = 2000) => {
+  const addToast = useCallback((message, type = 'success', duration = type === 'error' ? 5000 : 3000) => {
     const id = Math.random().toString(36).substring(2, 9);
     setToasts((prev) => [...prev, { id, message, type }]);
     

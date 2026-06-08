@@ -8,7 +8,7 @@ export const ImagePreview = ({ label, previewUrl, inputId, onFileSelect, onClear
     const file = e.target.files && e.target.files[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        addToast(`${label} size exceeds 2MB limit. Please upload a smaller image.`, 'error', 3000);
+        addToast(`${label} size exceeds 2MB limit. Please upload a smaller image.`, 'error');
         e.target.value = ''; 
         return;
       }
