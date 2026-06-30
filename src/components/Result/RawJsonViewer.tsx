@@ -1,6 +1,11 @@
-import{ useState } from 'react';
+import React, { useState } from 'react';
+import type { IAadhaarResult } from '../../interfaces/IAadhaarResult.interface';
 
-export const RawJsonViewer = ({ result }) => {
+interface RawJsonViewerProps {
+  result: IAadhaarResult | null;
+}
+
+export const RawJsonViewer: React.FC<RawJsonViewerProps> = ({ result }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   if (!result) return null;

@@ -1,6 +1,10 @@
-// import React from 'react';
+import React, { ReactNode } from 'react';
 
-export const PageLayout = ({ children }) => {
+interface PageLayoutProps {
+  children: ReactNode;
+}
+
+export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
   return (
     <div className="app-container">
       <header className="app-header">

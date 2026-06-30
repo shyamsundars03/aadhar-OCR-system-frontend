@@ -1,4 +1,4 @@
-import  { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { PageLayout } from './components/Layout/PageLayout';
 import { AadhaarUploadForm } from './components/Upload/AadhaarUploadForm';
 import { AadhaarResultCard } from './components/Result/AadhaarResultCard';
@@ -7,7 +7,7 @@ import { Loader } from './components/Feedback/Loader';
 import { useAadhaarOcr } from './hooks/useAadhaarOcr';
 import { useToast } from './hooks/useToast';
 
-function App() {
+export const App: React.FC = () => {
   const {
     status,
     result,
@@ -24,8 +24,8 @@ function App() {
   const { addToast } = useToast();
 
   useEffect(() => {
-    if (status === 'success') {
-      const missingFields = [];
+    if (status === 'success' && result) {
+      const missingFields: string[] = [];
       if (!result.name) missingFields.push('Name');
       if (!result.dob) missingFields.push('DOB');
       if (!result.gender) missingFields.push('Gender');

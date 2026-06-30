@@ -1,6 +1,10 @@
-// import React from 'react';
+import React from 'react';
 
-export const ErrorAlert = ({ message }) => {
+interface ErrorAlertProps {
+  message: string | null;
+}
+
+export const ErrorAlert: React.FC<ErrorAlertProps> = ({ message }) => {
   return (
     <div className="error-alert-card animate-shake">
       <div className="error-icon">

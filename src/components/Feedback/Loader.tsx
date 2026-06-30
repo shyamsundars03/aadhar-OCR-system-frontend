@@ -1,6 +1,6 @@
-// import React from 'react';
+import React from 'react';
 
-export const Loader = () => {
+export const Loader: React.FC = () => {
   return (
     <div className="loader-container card-blur">
       <div className="loader-ring">

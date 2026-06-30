@@ -1,19 +1,27 @@
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback, ReactNode } from 'react';
 import { ToastContext } from './toastContext';
+import type { IToast } from '../interfaces/IToast.interface';
 
-export const ToastProvider = ({ children }) => {
-  const [toasts, setToasts] = useState([]);
+export { ToastContext } from './toastContext';
+export type { IToastContext } from '../interfaces/IToastContext.interface';
 
-  const addToast = useCallback((message, type = 'success', duration = type === 'error' ? 5000 : 3000) => {
+interface ToastProviderProps {
+  children: ReactNode;
+}
+
+export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
+  const [toasts, setToasts] = useState<IToast[]>([]);
+
+  const addToast = useCallback((message: string, type: 'success' | 'error' = 'success', duration = type === 'error' ? 5000 : 3000) => {
     const id = Math.random().toString(36).substring(2, 9);
     setToasts((prev) => [...prev, { id, message, type }]);
-    
+
     setTimeout(() => {
       setToasts((prev) => prev.filter((toast) => toast.id !== id));
     }, duration);
   }, []);
 
-  const removeToast = useCallback((id) => {
+  const removeToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 

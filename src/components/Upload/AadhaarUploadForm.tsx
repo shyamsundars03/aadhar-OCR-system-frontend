@@ -1,7 +1,18 @@
-// import React from 'react';
+import React, { FormEvent } from 'react';
 import { ImagePreview } from './ImagePreview';
+import { OcrStatus } from '../../types';
 
-export const AadhaarUploadForm = ({ 
+interface AadhaarUploadFormProps {
+  frontPreviewUrl: string | null;
+  backPreviewUrl: string | null;
+  frontFile: File | null;
+  backFile: File | null;
+  setFiles: (front: File | null, back: File | null) => void;
+  runOcr: () => void;
+  status: OcrStatus;
+}
+
+export const AadhaarUploadForm: React.FC<AadhaarUploadFormProps> = ({ 
   frontPreviewUrl, 
   backPreviewUrl, 
   frontFile,
@@ -13,11 +24,11 @@ export const AadhaarUploadForm = ({
   const isProcessing = status === 'processing';
   const isReady = status === 'ready';
 
-  const handleFrontSelect = (file) => {
+  const handleFrontSelect = (file: File) => {
     setFiles(file, backFile);
   };
 
-  const handleBackSelect = (file) => {
+  const handleBackSelect = (file: File) => {
     setFiles(frontFile, file);
   };
 
@@ -29,14 +40,14 @@ export const AadhaarUploadForm = ({
     setFiles(frontFile, null);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isReady && !isProcessing) {
       runOcr();
     }
   };
 
-  const isDisabled = status === 'processing' || status === 'success' || status === 'error';
+  const isDisabled = status === 'processing' || status === 'success';
 
   return (
     <form className="upload-form" onSubmit={handleSubmit}>
