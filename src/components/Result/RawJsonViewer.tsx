@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IAadhaarResult } from '../../types';
+import type { IAadhaarResult } from '../../interfaces/IAadhaarResult.interface';
 
 interface RawJsonViewerProps {
   result: IAadhaarResult | null;

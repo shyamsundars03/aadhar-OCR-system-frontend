@@ -1,23 +1,10 @@
 import { ENDPOINTS } from '../config/endpoints.config';
-import { IAadhaarResult, IApiResponse, IOcrApiClient } from '../types';
+import { IAadhaarResult } from '../interfaces/IAadhaarResult.interface';
+import { IApiResponse } from '../interfaces/IApiResponse.interface';
+import { IOcrApiClient } from '../interfaces/IOcrApiClient.interface';
 import { AppError } from '../utils/AppError';
-import { z } from 'zod';
-
-const AadhaarResultSchema = z.object({
-  name: z.string().nullable(),
-  aadhaarNumber: z.string().nullable(),
-  aadhaarSuffix: z.string().nullable(),
-  dob: z.string().nullable(),
-  gender: z.string().nullable(),
-  address: z.string().nullable(),
-  rawText: z.string()
-});
-
-const ApiResponseSchema = z.object({
-  status: z.union([z.literal('success'), z.literal('fail'), z.literal('error')]),
-  data: AadhaarResultSchema,
-  message: z.string().optional()
-});
+import { ERROR_MESSAGES } from '../constants/errorMessages';
+import { ApiResponseSchema } from '../validations/ocr.validation';
 
 export class OcrApiClient implements IOcrApiClient {
   async uploadAadhaarImages(frontFile: File, backFile: File): Promise<IApiResponse<IAadhaarResult>> {
@@ -31,26 +18,32 @@ export class OcrApiClient implements IOcrApiClient {
         method: 'POST',
         body: formData,
       });
-    } catch (networkErr: any) {
-      throw new AppError(
-        'Network error: Failed to connect to OCR Server. Please check if backend is running.',
-        true
-      );
+    } catch (networkErr: unknown) {
+      // Narrow: any fetch network failure is a TypeError
+      const errMsg = networkErr instanceof Error
+        ? networkErr.message
+        : ERROR_MESSAGES.NETWORK_ERROR;
+      throw new AppError(`${ERROR_MESSAGES.NETWORK_ERROR}: ${errMsg}`, true);
     }
 
-    let rawJson: any;
+    let rawJson: unknown;
     try {
       rawJson = await response.json();
-    } catch (parseErr) {
+    } catch (_parseErr: unknown) { // eslint-disable-line @typescript-eslint/no-unused-vars
       throw new AppError(
-        `Failed to parse server response: HTTP ${response.status}`,
+        `${ERROR_MESSAGES.RESPONSE_PARSE_ERROR}: HTTP ${response.status}`,
         false,
         response.status
       );
     }
 
     if (!response.ok) {
-      const errMsg = rawJson.message || rawJson.error?.message || 'Failed to process Aadhaar card images.';
+      // Narrow the unknown rawJson before accessing properties
+      const errorData = rawJson as Record<string, unknown>;
+      const errMsg =
+        typeof errorData?.message === 'string'
+          ? errorData.message
+          : 'Failed to process Aadhaar card images.';
       throw new AppError(errMsg, false, response.status);
     }
 
@@ -58,7 +51,7 @@ export class OcrApiClient implements IOcrApiClient {
     const validation = ApiResponseSchema.safeParse(rawJson);
     if (!validation.success) {
       console.error('API Response Schema Validation failed:', validation.error);
-      throw new AppError('Server returned an invalid data structure.');
+      throw new AppError(ERROR_MESSAGES.INVALID_RESPONSE_STRUCTURE);
     }
 
     return validation.data;

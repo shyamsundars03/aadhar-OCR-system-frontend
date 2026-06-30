@@ -1,7 +1,6 @@
 import { createContext } from 'react';
+import type { IToastContext } from '../interfaces/IToastContext.interface';
 
-export interface IToastContext {
-  addToast: (message: string, type?: 'success' | 'error', duration?: number) => void;
-}
+export type { IToastContext } from '../interfaces/IToastContext.interface';
 
 export const ToastContext = createContext<IToastContext | null>(null);

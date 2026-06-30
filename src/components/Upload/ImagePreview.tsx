@@ -1,5 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import { useToast } from '../../hooks/useToast';
+import { ERROR_MESSAGES } from '../../constants/errorMessages';
 
 interface ImagePreviewProps {
   label: string;
@@ -24,8 +25,8 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
     const file = e.target.files && e.target.files[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        addToast(`${label} size exceeds 2MB limit. Please upload a smaller image.`, 'error');
-        e.target.value = ''; 
+        addToast(ERROR_MESSAGES.FILE_TOO_LARGE(label), 'error');
+        e.target.value = '';
         return;
       }
       onFileSelect(file);

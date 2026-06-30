@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { OcrApiClient } from '../api/OcrApiClient';
-import { IAadhaarResult, OcrStatus } from '../types';
+import { IAadhaarResult } from '../interfaces/IAadhaarResult.interface';
+import { OcrStatus } from '../types';
+import { ERROR_MESSAGES } from '../constants/errorMessages';
 
 const resizeImage = (file: File, maxWidth = 800): Promise<File> => {
   return new Promise((resolve) => {
@@ -69,16 +71,12 @@ export const useAadhaarOcr = () => {
 
   const setFiles = (front: File | null, back: File | null) => {
     if (front !== frontFile) {
-      if (frontPreview) {
-        URL.revokeObjectURL(frontPreview);
-      }
+      if (frontPreview) URL.revokeObjectURL(frontPreview);
       setFrontPreview(front ? URL.createObjectURL(front) : null);
       setFrontFile(front);
     }
     if (back !== backFile) {
-      if (backPreview) {
-        URL.revokeObjectURL(backPreview);
-      }
+      if (backPreview) URL.revokeObjectURL(backPreview);
       setBackPreview(back ? URL.createObjectURL(back) : null);
       setBackFile(back);
     }
@@ -89,7 +87,7 @@ export const useAadhaarOcr = () => {
 
   const runOcr = async () => {
     if (!frontFile || !backFile) {
-      setError('Please select both front and back images.');
+      setError(ERROR_MESSAGES.MISSING_FILES);
       setProcessStatus('error');
       return;
     }
@@ -105,21 +103,22 @@ export const useAadhaarOcr = () => {
         setResult(response.data);
         setProcessStatus('success');
       } else {
-        throw new Error(response.message || 'Verification failed');
+        throw new Error(response.message || ERROR_MESSAGES.VERIFICATION_FAILED);
       }
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred during processing.');
+    } catch (err: unknown) {
+      // Narrow the unknown error to extract a message string safely
+      let errMessage: string = ERROR_MESSAGES.GENERIC_ERROR;
+      if (err instanceof Error) {
+        errMessage = err.message;
+      }
+      setError(errMessage);
       setProcessStatus('error');
     }
   };
 
   const resetFlow = () => {
-    if (frontPreview) {
-      URL.revokeObjectURL(frontPreview);
-    }
-    if (backPreview) {
-      URL.revokeObjectURL(backPreview);
-    }
+    if (frontPreview) URL.revokeObjectURL(frontPreview);
+    if (backPreview) URL.revokeObjectURL(backPreview);
     setFrontPreview(null);
     setBackPreview(null);
     setFrontFile(null);

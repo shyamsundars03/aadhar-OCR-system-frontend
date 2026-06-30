@@ -1,5 +1,5 @@
 import React from 'react';
-import { IAadhaarResult } from '../../types';
+import type { IAadhaarResult } from '../../interfaces/IAadhaarResult.interface';
 
 interface AadhaarResultCardProps {
   result: IAadhaarResult | null;

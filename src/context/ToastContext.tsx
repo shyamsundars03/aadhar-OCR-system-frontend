@@ -1,9 +1,9 @@
 import React, { useState, useCallback, ReactNode } from 'react';
 import { ToastContext } from './toastContext';
-import { IToast } from '../types';
+import type { IToast } from '../interfaces/IToast.interface';
 
 export { ToastContext } from './toastContext';
-export type { IToastContext } from './toastContext';
+export type { IToastContext } from '../interfaces/IToastContext.interface';
 
 interface ToastProviderProps {
   children: ReactNode;
@@ -15,7 +15,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   const addToast = useCallback((message: string, type: 'success' | 'error' = 'success', duration = type === 'error' ? 5000 : 3000) => {
     const id = Math.random().toString(36).substring(2, 9);
     setToasts((prev) => [...prev, { id, message, type }]);
-    
+
     setTimeout(() => {
       setToasts((prev) => prev.filter((toast) => toast.id !== id));
     }, duration);
