@@ -1,6 +1,11 @@
-// import React from 'react';
+import React from 'react';
+import { IAadhaarResult } from '../../types';
 
-export const AadhaarResultCard = ({ result }) => {
+interface AadhaarResultCardProps {
+  result: IAadhaarResult | null;
+}
+
+export const AadhaarResultCard: React.FC<AadhaarResultCardProps> = ({ result }) => {
   if (!result) return null;
 
   const { name, aadhaarNumber, dob, gender, address } = result;

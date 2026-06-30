@@ -1,10 +1,26 @@
-// import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { useToast } from '../../hooks/useToast';
 
-export const ImagePreview = ({ label, previewUrl, inputId, onFileSelect, onClear, isDisabled }) => {
+interface ImagePreviewProps {
+  label: string;
+  previewUrl: string | null;
+  inputId: string;
+  onFileSelect: (file: File) => void;
+  onClear: () => void;
+  isDisabled: boolean;
+}
+
+export const ImagePreview: React.FC<ImagePreviewProps> = ({ 
+  label, 
+  previewUrl, 
+  inputId, 
+  onFileSelect, 
+  onClear, 
+  isDisabled 
+}) => {
   const { addToast } = useToast();
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
@@ -17,7 +33,7 @@ export const ImagePreview = ({ label, previewUrl, inputId, onFileSelect, onClear
   };
 
   const handleClear = () => {
-    const input = document.getElementById(inputId);
+    const input = document.getElementById(inputId) as HTMLInputElement | null;
     if (input) input.value = '';
     onClear();
   };
@@ -61,6 +77,7 @@ export const ImagePreview = ({ label, previewUrl, inputId, onFileSelect, onClear
       )}
 
       <input 
+        key={previewUrl || 'empty'}
         type="file" 
         id={inputId} 
         disabled={isDisabled}
