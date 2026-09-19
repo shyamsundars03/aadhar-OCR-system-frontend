@@ -5,5 +5,6 @@ export interface IAadhaarResult {
   dob: string | null;
   gender: string | null;
   address: string | null;
-  rawText: string;
+  rawText?: string | null;
+  verificationScore?: number;
 }

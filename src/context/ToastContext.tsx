@@ -12,7 +12,8 @@ interface ToastProviderProps {
 export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   const [toasts, setToasts] = useState<IToast[]>([]);
 
-  const addToast = useCallback((message: string, type: 'success' | 'error' = 'success', duration = type === 'error' ? 5000 : 3000) => {
+  // Duration set to 10,000ms (10 seconds) by default for long readability
+  const addToast = useCallback((message: string, type: 'success' | 'error' = 'success', duration = 10000) => {
     const id = Math.random().toString(36).substring(2, 9);
     setToasts((prev) => [...prev, { id, message, type }]);
 

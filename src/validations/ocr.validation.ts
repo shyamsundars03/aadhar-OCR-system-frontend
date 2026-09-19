@@ -9,7 +9,8 @@ export const AadhaarResultSchema = z.object({
   dob: z.string().nullable(),
   gender: z.string().nullable(),
   address: z.string().nullable(),
-  rawText: z.string()
+  rawText: z.string().optional().nullable(),
+  verificationScore: z.number().optional()
 }) satisfies z.ZodType<IAadhaarResult>;
 
 export const ApiResponseSchema = z.object({
